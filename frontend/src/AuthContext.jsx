@@ -4,18 +4,20 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
     const [authTokens, setAuthTokens] = useState(() => {
-        return localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')) : null;
+        return localStorage.getItem('authTokens')
+            ? JSON.parse(localStorage.getItem('authTokens'))
+            : null;
     });
 
     const [user, setUser] = useState(null);
 
     useEffect(() => {
         if (authTokens) {
-            // Декодиране на токена
-            const decodedToken = JSON.parse(atob(authTokens.access.split('.')[1]));
-            console.log("Decoded Token:", decodedToken);
-
-            setUser({ username: decodedToken.username });
+            const decodedToken = JSON.parse(
+                atob(authTokens.access.split('.')[1])
+            );
+            console.log('Decoded Token:', decodedToken);
+            setUser({ username: decodedToken.username, token: decodedToken });
         }
     }, [authTokens]);
 
@@ -34,7 +36,7 @@ const AuthProvider = ({ children }) => {
         user,
         authTokens,
         loginUser,
-        logoutUser
+        logoutUser,
     };
 
     return (
