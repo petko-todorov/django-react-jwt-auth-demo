@@ -23,6 +23,13 @@ const DashboardPage = () => {
             {user ? (
                 <div>
                     <p>Welcome, {user.username}</p>
+                    <ul>
+                        {Object.entries(user.token).map(([key, value]) => (
+                            <li key={key}>
+                                {key}: {value}
+                            </li>
+                        ))}
+                    </ul>
                     <button onClick={handleLogout}>Logout</button>
                 </div>
             ) : (
