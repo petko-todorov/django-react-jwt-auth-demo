@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 
-
 const RegisterPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -18,20 +17,25 @@ const RegisterPage = () => {
         const payload = { username, password, password2 };
 
         try {
-            const response = await fetch('http://localhost:8000/api/register/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
+            const response = await fetch(
+                'http://localhost:8000/api/register/',
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                }
+            );
 
             const data = await response.json();
             if (response.ok) {
-                // Automatically log in after successful registration
-                const loginResponse = await fetch('http://localhost:8000/api/token/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password }),
-                });
+                const loginResponse = await fetch(
+                    'http://localhost:8000/api/token/',
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password }),
+                    }
+                );
 
                 const loginData = await loginResponse.json();
                 if (loginResponse.ok) {
