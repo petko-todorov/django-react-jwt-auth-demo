@@ -1,5 +1,4 @@
-// src/pages/LogoutPage.js
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { AuthContext } from '../AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,7 +8,7 @@ const LogoutPage = () => {
 
     useEffect(() => {
         logoutUser();
-        navigate('/');  // Пренасочване към Login страница след logout
+        navigate('/');
     }, [logoutUser, navigate]);
 
     return <div>Logging out...</div>;
