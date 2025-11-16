@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .serializers import RegisterSerializer
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
 
@@ -30,22 +30,36 @@ class RegisterView(APIView):
 
 
 class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         try:
-            refresh_token = request.data["refresh"]
+            refresh_token = request.data.get("refresh")
+            if not refresh_token:
+                return Response(
+                    {"error": "Refresh token is required."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
             token = RefreshToken(refresh_token)
             token.blacklist()
-            return Response({"message": "Logout successful."}, status=status.HTTP_200_OK)
+            return Response(
+                {"message": "Logout successful."},
+                status=status.HTTP_200_OK
+            )
         except Exception as e:
-            return Response({"error": "Invalid token or token already blacklisted."},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Invalid token or token already blacklisted."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 def get_tokens_for_user(user: User):
     refresh = RefreshToken.for_user(user)
 
-    refresh.payload['username'] = user.username
-    print(refresh.payload)
+    refresh['username'] = user.username
+    refresh.access_token['username'] = user.username
+
     return {
         'access': str(refresh.access_token),
         'refresh': str(refresh),
